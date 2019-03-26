@@ -6,7 +6,6 @@ import java.util.Optional;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Component;
 
 import com.social.friends.model.User;
@@ -20,10 +19,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 
 	@Autowired
 	public UserRepo userRepository;
-	
-	/** The b crypt password encoder. */
-	@Autowired
-	private BCryptPasswordEncoder bCryptPasswordEncoder;
 
 	@Override
 	public List<User> getAllUsers() {
@@ -36,8 +31,6 @@ public class AuthenticationServiceImpl implements AuthenticationService {
 			Optional<User> dbUserOptional = userRepository.findById(userData.getEmail());
 			User dbUser = dbUserOptional.isPresent() ? dbUserOptional.get() : null;
 			if (dbUser == null){
-				String encodedPassword = bCryptPasswordEncoder.encode(userData.getPassword());
-				userData.setPassword(encodedPassword);
 				userRepository.save(userData);
 				return "User saved successfully";
 			} else{
